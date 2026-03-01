@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employee Dashboard</title>
+</head>
+<body>
+
+<h2>Employee Dashboard</h2>
+
+<h3>Machines</h3>
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Capacity</th>
+    <th>Status</th>
+    <th>Update Status</th>
+</tr>
+
+<tr th:each="m : ${machines}">
+    <td th:text="${m.machineId}"></td>
+    <td th:text="${m.machineName}"></td>
+    <td th:text="${m.maxCapacity}"></td>
+    <td th:text="${m.status}"></td>
+    <td>
+        <form action="/employee/update-status" method="post">
+            <input type="hidden" name="machineId" th:value="${m.machineId}">
+            <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="MAINTENANCE">MAINTENANCE</option>
+                <option value="BREAKDOWN">BREAKDOWN</option>
+            </select>
+            <button type="submit">Update</button>
+        </form>
+    </td>
+</tr>
+</table>
+
+<a href="/employee/performance">View My Performance</a>
+
+<h3>Process Logs</h3>
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Machine</th>
+    <th>Batch</th>
+    <th>Units</th>
+</tr>
+<tr th:each="l : ${logs}">
+    <td th:text="${l.logId}"></td>
+    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
+    <td th:text="${l.batchId}"></td>
+    <td th:text="${l.unitsProduced}"></td>
+</tr>
+</table>
+
+<br><br>
+
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+<br>
+<h3>Dispatch Job</h3>
+<form action="/employee/add-log" method="post">
+    Machine ID: <input type="number" name="machineId"><br>
+    Batch ID: <input type="text" name="batchId"><br>
+    Units Produced: <input type="number" name="unitsProduced"><br>
+    <button type="submit">Submit</button>
+</form>
+
+
+</body>
+</html>

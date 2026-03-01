@@ -1,0 +1,11 @@
+<h2>Edit Machine</h2>
+
+<form action="/admin/update-machine" method="post">
+    <input type="hidden" name="machineId" th:value="${machine.machineId}">
+
+    Name: <input type="text" name="machineName" th:value="${machine.machineName}"><br>
+    Capacity: <input type="number" name="maxCapacity" th:value="${machine.maxCapacity}"><br>
+    Status: <input type="text" name="status" th:value="${machine.status}"><br>
+
+    <button type="submit">Update</button>
+</form>

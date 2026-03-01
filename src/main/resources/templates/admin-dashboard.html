@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<h3>Machines</h3>
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Capacity</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+<tr th:each="m : ${machines}">
+    <td th:text="${m.machineId}"></td>
+    <td th:text="${m.machineName}"></td>
+    <td th:text="${m.maxCapacity}"></td>
+    <td th:text="${m.status}"></td>
+    <td>
+        <form th:action="@{/admin/delete-machine/{id}(id=${m.machineId})}" method="post" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+
+        <a th:href="@{/admin/edit-machine/{id}(id=${m.machineId})}">Edit</a>
+    </td>
+</tr>
+</table>
+
+
+<h3>Process Logs</h3>
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Machine</th>
+    <th>Batch</th>
+    <th>Units</th>
+</tr>
+
+<tr th:each="l : ${logs}">
+    <td th:text="${l.logId}"></td>
+    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
+    <td th:text="${l.batchId}"></td>
+    <td th:text="${l.unitsProduced}"></td>
+</tr>
+</table>
+
+<a href="/admin/report">View Report</a>
+
+<h3>Add Machine</h3>
+<form action="/admin/add-machine" method="post">
+    Name: <input type="text" name="machineName" required><br>
+    Capacity: <input type="number" name="maxCapacity" required><br>
+    Status: <input type="text" name="status" required><br>
+    <button type="submit">Add</button>
+</form>
+
+<h3>Add Employee</h3>
+<form action="/admin/add-user" method="post">
+    Username: <input type="text" name="username"><br>
+    Password: <input type="text" name="password"><br>
+    Role:
+    <select name="role">
+        <option value="EMPLOYEE">EMPLOYEE</option>
+        <option value="ADMIN">ADMIN</option>
+    </select><br>
+    <button type="submit">Add User</button>
+</form>
+
+<br>
+<h3>Bottleneck Machine</h3>
+<p th:if="${bottleneck != null}">
+    <b th:text="${bottleneck.machineName}"></b>
+</p>
+
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

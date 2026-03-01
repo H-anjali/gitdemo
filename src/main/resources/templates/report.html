@@ -1,0 +1,13 @@
+<h2>Production Report</h2>
+
+<table border="1">
+<tr>
+    <th>Machine</th>
+    <th>Total Units</th>
+</tr>
+
+<tr th:each="entry : ${report}">
+    <td th:text="${entry.key}"></td>
+    <td th:text="${entry.value}"></td>
+</tr>
+</table>
