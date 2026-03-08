@@ -2,85 +2,165 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
-<body>
+<body class="bg-light">
 
-<h2>Admin Dashboard</h2>
-
-<h3>Machines</h3>
-<table border="1">
-<tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Capacity</th>
-    <th>Status</th>
-    <th>Action</th>
-</tr>
-
-<tr th:each="m : ${machines}">
-    <td th:text="${m.machineId}"></td>
-    <td th:text="${m.machineName}"></td>
-    <td th:text="${m.maxCapacity}"></td>
-    <td th:text="${m.status}"></td>
-    <td>
-        <form th:action="@{/admin/delete-machine/{id}(id=${m.machineId})}" method="post" style="display:inline;">
-            <button type="submit">Delete</button>
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">🏭 Intelligent Manufacturing - Admin</span>
+        <form action="/logout" method="post">
+            <button class="btn btn-danger">Logout</button>
         </form>
+    </div>
+</nav>
 
-        <a th:href="@{/admin/edit-machine/{id}(id=${m.machineId})}">Edit</a>
-    </td>
-</tr>
-</table>
+<div class="container mt-4">
 
+    <!-- Machines Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5>Machines</h5>
+        </div>
+        <div class="card-body">
 
-<h3>Process Logs</h3>
-<table border="1">
-<tr>
-    <th>ID</th>
-    <th>Machine</th>
-    <th>Batch</th>
-    <th>Units</th>
-</tr>
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
 
-<tr th:each="l : ${logs}">
-    <td th:text="${l.logId}"></td>
-    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
-    <td th:text="${l.batchId}"></td>
-    <td th:text="${l.unitsProduced}"></td>
-</tr>
-</table>
+                <tbody>
+                <tr th:each="m : ${machines}">
+                    <td th:text="${m.machineId}"></td>
+                    <td th:text="${m.machineName}"></td>
+                    <td th:text="${m.maxCapacity}"></td>
 
-<a href="/admin/report">View Report</a>
+                    <td>
+                        <span th:if="${m.status == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
+                        <span th:if="${m.status == 'MAINTENANCE'}" class="badge bg-warning text-dark">MAINTENANCE</span>
+                        <span th:if="${m.status == 'BREAKDOWN'}" class="badge bg-danger">BREAKDOWN</span>
+                    </td>
 
-<h3>Add Machine</h3>
-<form action="/admin/add-machine" method="post">
-    Name: <input type="text" name="machineName" required><br>
-    Capacity: <input type="number" name="maxCapacity" required><br>
-    Status: <input type="text" name="status" required><br>
-    <button type="submit">Add</button>
-</form>
+                    <td>
+                        <form th:action="@{/admin/delete-machine/{id}(id=${m.machineId})}" method="post" style="display:inline;">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                        <a th:href="@{/admin/edit-machine/{id}(id=${m.machineId})}"
+                           class="btn btn-sm btn-info text-white">Edit</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-<h3>Add Employee</h3>
-<form action="/admin/add-user" method="post">
-    Username: <input type="text" name="username"><br>
-    Password: <input type="text" name="password"><br>
-    Role:
-    <select name="role">
-        <option value="EMPLOYEE">EMPLOYEE</option>
-        <option value="ADMIN">ADMIN</option>
-    </select><br>
-    <button type="submit">Add User</button>
-</form>
+        </div>
+    </div>
 
-<br>
-<h3>Bottleneck Machine</h3>
-<p th:if="${bottleneck != null}">
-    <b th:text="${bottleneck.machineName}"></b>
-</p>
+    <!-- Process Logs -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5>Production Logs</h5>
+        </div>
+        <div class="card-body">
 
-<form action="/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Machine</th>
+                    <th>Batch</th>
+                    <th>Units</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="l : ${logs}">
+                    <td th:text="${l.logId}"></td>
+                    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
+                    <td th:text="${l.batchId}"></td>
+                    <td th:text="${l.unitsProduced}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Bottleneck -->
+    <div class="alert alert-danger shadow" th:if="${bottleneck != null}">
+        ⚠ Bottleneck Machine:
+        <strong th:text="${bottleneck.machineName}"></strong>
+    </div>
+
+    <!-- Add Machine -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h5>Add Machine</h5>
+        </div>
+        <div class="card-body">
+
+            <form action="/admin/add-machine" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="machineName" class="form-control" placeholder="Machine Name" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" name="maxCapacity" class="form-control" placeholder="Capacity" required>
+                </div>
+                <div class="col-md-4">
+                    <select name="status" class="form-select" required>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="MAINTENANCE">MAINTENANCE</option>
+                        <option value="BREAKDOWN">BREAKDOWN</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-success">Add Machine</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Add Employee -->
+    <div class="card shadow mb-5">
+        <div class="card-header bg-info text-white">
+            <h5>Add Employee</h5>
+        </div>
+        <div class="card-body">
+
+            <form action="/admin/add-user" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="col-md-4">
+                    <select name="role" class="form-select">
+                        <option value="EMPLOYEE">EMPLOYEE</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary">Add User</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <a href="/admin/report" class="btn btn-dark">View Report</a>
+
+</div>
 
 </body>
 </html>

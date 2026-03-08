@@ -2,73 +2,131 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Employee Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-<h2>Employee Dashboard</h2>
+<body class="bg-light">
 
-<h3>Machines</h3>
-<table border="1">
-<tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Capacity</th>
-    <th>Status</th>
-    <th>Update Status</th>
-</tr>
-
-<tr th:each="m : ${machines}">
-    <td th:text="${m.machineId}"></td>
-    <td th:text="${m.machineName}"></td>
-    <td th:text="${m.maxCapacity}"></td>
-    <td th:text="${m.status}"></td>
-    <td>
-        <form action="/employee/update-status" method="post">
-            <input type="hidden" name="machineId" th:value="${m.machineId}">
-            <select name="status">
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="MAINTENANCE">MAINTENANCE</option>
-                <option value="BREAKDOWN">BREAKDOWN</option>
-            </select>
-            <button type="submit">Update</button>
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">👷 Intelligent Manufacturing - Employee</span>
+        <form action="/logout" method="post">
+            <button class="btn btn-danger">Logout</button>
         </form>
-    </td>
-</tr>
-</table>
+    </div>
+</nav>
 
-<a href="/employee/performance">View My Performance</a>
+<div class="container mt-4">
 
-<h3>Process Logs</h3>
-<table border="1">
-<tr>
-    <th>ID</th>
-    <th>Machine</th>
-    <th>Batch</th>
-    <th>Units</th>
-</tr>
-<tr th:each="l : ${logs}">
-    <td th:text="${l.logId}"></td>
-    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
-    <td th:text="${l.batchId}"></td>
-    <td th:text="${l.unitsProduced}"></td>
-</tr>
-</table>
+    <!-- Machines Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5>Machines</h5>
+        </div>
 
-<br><br>
+        <div class="card-body">
 
-<form action="/logout" method="post">
-    <button type="submit">Logout</button>
-</form>
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
 
-<br>
-<h3>Dispatch Job</h3>
-<form action="/employee/add-log" method="post">
-    Machine ID: <input type="number" name="machineId"><br>
-    Batch ID: <input type="text" name="batchId"><br>
-    Units Produced: <input type="number" name="unitsProduced"><br>
-    <button type="submit">Submit</button>
-</form>
+                <tbody>
+                <tr th:each="m : ${machines}">
+                    <td th:text="${m.machineId}"></td>
+                    <td th:text="${m.machineName}"></td>
+                    <td th:text="${m.maxCapacity}"></td>
 
+                    <td>
+                        <span th:if="${m.status == 'ACTIVE'}" class="badge bg-success">ACTIVE</span>
+                        <span th:if="${m.status == 'MAINTENANCE'}" class="badge bg-warning text-dark">MAINTENANCE</span>
+                        <span th:if="${m.status == 'BREAKDOWN'}" class="badge bg-danger">BREAKDOWN</span>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+</div>
+
+
+    <!-- Dispatch Job -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+            <h5>Dispatch Job</h5>
+        </div>
+
+        <div class="card-body">
+            <form action="/employee/add-log" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <input type="number" name="machineId" class="form-control" placeholder="Machine ID" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="batchId" class="form-control" placeholder="Batch ID" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" name="unitsProduced" class="form-control" placeholder="Units Produced" required>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-success">Submit Production</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Production Logs -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5>Production Logs</h5>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Machine</th>
+                    <th>Batch</th>
+                    <th>Units</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="l : ${logs}">
+                    <td th:text="${l.logId}"></td>
+                    <td th:text="${l.machine != null ? l.machine.machineName : 'N/A'}"></td>
+                    <td th:text="${l.batchId}"></td>
+                    <td th:text="${l.unitsProduced}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Performance Button -->
+    <div class="text-center mb-5">
+        <a href="/employee/performance" class="btn btn-dark btn-lg">
+            View My Performance
+        </a>
+    </div>
+
+</div>
 
 </body>
 </html>

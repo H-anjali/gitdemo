@@ -14,6 +14,8 @@ public class Machine {
 
     private int maxCapacity;
 
+    private int capacity; // Ensure this existss
+
     private String status;   // must exist
 
     // GETTERS AND SETTERS
@@ -26,6 +28,9 @@ public class Machine {
 
     public int getMaxCapacity() { return maxCapacity; }
     public void setMaxCapacity(int maxCapacity) { this.maxCapacity = maxCapacity; }
+
+    public int getCapacity() { return capacity; } // The missing symbol
+    public void setCapacity(int capacity) { this.capacity = capacity; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

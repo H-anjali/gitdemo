@@ -1,9 +1,18 @@
 package com.anjali.manufacturing.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime; // Add this import
 
 @Entity
 public class ProcessLog {
+
+
+// Add these fields to your ProcessLog class
+private LocalDateTime startTime;
+private LocalDateTime endTime;
+
+// This allows us to calculate: 
+// Actual Speed = unitsProduced / (endTime - startTime)
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +36,10 @@ public class ProcessLog {
 
     public int getUnitsProduced() { return unitsProduced; }
     public void setUnitsProduced(int unitsProduced) { this.unitsProduced = unitsProduced; }
+
+
+    public LocalDateTime getStartTime() { return startTime; }
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
+    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
 }
